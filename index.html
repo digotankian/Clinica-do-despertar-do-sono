@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Despertar do Sono</title>
+    <style>
+        /* ESTÉTICA RETRO-CLÍNICA (Anos 90/2000) */
+        body { margin: 0; font-family: 'Trebuchet MS', Arial, sans-serif; background-color: #E8EBE9; color: #222; overflow-x: hidden; }
+        #public-view { transition: opacity 0.5s; }
+
+        header {
+            background-color: #D1D8D5; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid #1F4F46; box-shadow: 0 4px 2px -2px rgba(0,0,0,0.2);
+        }
+        .logo img { max-height: 60px; cursor: pointer; } /* Cursor adicionado para indicar toque */
+        nav a { margin-left: 20px; text-decoration: none; color: #444; font-size: 13px; font-weight: bold; text-transform: uppercase; padding: 5px; }
+        
+        .hero { text-align: center; padding: 60px 20px; background: #FFF; border-bottom: 1px solid #CCC; }
+        .hero h1 { font-size: 38px; color: #1F4F46; }
+        .hero p { font-size: 16px; color: #555; max-width: 600px; margin: 0 auto 20px auto; line-height: 1.5; }
+        .hero-img { width: 100%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; object-fit: cover; }
+
+        .section-title { text-align: center; color: #1F4F46; font-size: 28px; margin: 40px 0 20px 0; border-bottom: 2px solid #1F4F46; display: inline-block; padding-bottom: 5px; }
+        
+        /* GALERIA DA CLÍNICA (FACHADA BONITA) */
+        .clinic-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding: 20px 40px; background: #FFF; }
+        .clinic-gallery img { width: 100%; height: 250px; object-fit: cover; border-radius: 4px; border: 1px solid #CCC; }
+
+        /* SEÇÃO DR. FLAUBER */
+        .doctor-section { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; padding: 40px; background: #F4F7F6; }
+        .doctor-section img { width: 300px; height: 350px; object-fit: cover; border-radius: 8px; border: 3px solid #FFF; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .doctor-text { max-width: 500px; }
+
+        .btn {
+            padding: 12px 25px; background-color: #C0C8C5; color: #111; text-decoration: none; font-weight: bold;
+            font-family: 'Courier New', Courier, monospace; border: 2px solid; border-top-color: #FFF; border-left-color: #FFF;
+            border-bottom-color: #555; border-right-color: #555; cursor: pointer; font-size: 14px;
+        }
+
+        .form-section { padding: 50px 20px; text-align: center; background: #FFF; }
+        .form-container { max-width: 450px; margin: 0 auto; text-align: left; background-color: #D1D8D5; padding: 30px; border: 2px solid #999; box-shadow: 5px 5px 0px #A0A0A0; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 2px inset #FFF; background-color: #EAEAEA; font-family: 'Courier New', Courier, monospace; box-sizing: border-box; }
+        
+        footer { background-color: #1F4F46; color: #8BA8A3; text-align: center; padding: 20px; font-family: 'Courier New', Courier, monospace; font-size: 11px; }
+        .staff-login { color: #4A7A71; text-decoration: none; cursor: pointer; float: right; }
+
+        /* MODAL DE SENHA */
+        #login-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background-color: #000080; color: #FFF; padding: 2px; width: 400px; border: 3px solid #C0C0C0; font-family: 'Courier New', Courier, monospace; }
+        .modal-header { background-color: #C0C0C0; color: #000; padding: 5px; font-weight: bold; display: flex; justify-content: space-between; }
+        .modal-body { padding: 20px; text-align: center; }
+        .modal-body input { background: #000; color: #FFF; border: 1px solid #FFF; padding: 5px; width: 80%; margin-top: 15px; text-align: center; }
+
+        /* INTRANET SECRETA */
+        #intranet-view { display: none; background-color: #050505; color: #00FF00; font-family: 'Courier New', Courier, monospace; min-height: 100vh; padding: 40px; }
+        .scanlines { background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06)); background-size: 100% 2px, 3px 100%; pointer-events: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; opacity: 0.3; }
+        
+        .intranet-alert { border: 2px solid red; padding: 15px; margin-bottom: 20px; background: rgba(255,0,0,0.1); display: flex; gap: 20px; align-items: center; }
+        .intranet-alert img { width: 150px; filter: grayscale(100%) contrast(1.2); }
+
+        .patient-card { border: 1px solid #00FF00; padding: 20px; margin-bottom: 20px; background: rgba(0,255,0,0.05); }
+        .patient-images { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .patient-images img { width: 200px; height: 200px; object-fit: cover; border: 1px solid #00FF00; filter: grayscale(80%); }
+        .red-text { color: #FF3333; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+    <!-- VISÃO PÚBLICA -->
+    <div id="public-view">
+        <header>
+            <div class="logo">
+                <img src="Editing_logo_eye_details_20261015171106.jpg" alt="Logo L.D.S.">
+            </div>
+            <nav>
+                <a href="#clinica">A Clínica</a>
+                <a href="#dr-fulir">Dr. Flauber Fulir</a>
+                <a href="#triagem">Pré-Triagem</a>
+            </nav>
+        </header>
+
+        <div class="hero">
+            <h1>A Cura Começa de Olhos Fechados.</h1>
+            <p>O Sistema L.D.S. (Leitura de Sonhos) foi desenvolvido para isolar e extrair a tristeza humana. Em ambientes clinicamente puros, nós garantimos a sua paz.</p>
+            <img class="hero-img" src="Patients_smiling_in_white_cafeteria_20261015180434.jpg" alt="Pacientes Felizes">
+            <br>
+            <a href="#triagem" class="btn">INICIAR PROTOCOLO DE TRIAGEM</a>
+        </div>
+
+        <div style="text-align: center;"><h2 class="section-title" id="dr-fulir">Corpo Clínico e Liderança</h2></div>
+        <div class="doctor-section">
+            <div class="doctor-text">
+                <h3 style="color: #1F4F46; font-size: 24px;">Dr. Flauber Fulir</h3>
+                <p>Criador da Tecnologia L.D.S. e especialista na psique humana. O nosso corpo clínico altamente especializado garante que os seus procedimentos decorram num ambiente perfeitamente asséptico e inovador. A sua dor não precisa de ser um fardo eterno.</p>
+            </div>
+            <img src="Doctor_smiling_with_forced_expre…_20261015182357.jpg" alt="Dr. Flauber Sorrindo">
+            <img src="People_looking_like_attached_nurse_20261015182537.jpg" alt="Dr. Flauber na Clínica">
+            <img src="Designing_patient_with_oxygen_mask_20261015182307.jpg" alt="Dr. Flauber com equipamento">
+        </div>
+
+        <div style="text-align: center;"><h2 class="section-title" id="clinica">Instalações e Tecnologia L.D.S.</h2></div>
+        <div class="clinic-gallery">
+            <img src="Nurses_working_in_white_clinic_20261015181305.jpg" alt="Clínica Branca">
+            <img src="Nurses_working_with_dream_techno…_20261015181303.jpg" alt="Tecnologia LDS">
+            <img src="Nurse_in_white_clinic_20261015175831.jpg" alt="Enfermeira">
+            <img src="Male_nurse_working_in_clinic_20261015175918.jpg" alt="Enfermeiro Trabalhando">
+            <img src="Nurses_working_in_hospital_ward_20261015180041.jpg" alt="Enfermaria Limpa">
+            <img src="Nurses_working_in_clinic_20261015180043.jpg" alt="Atendimento Médico">
+        </div>
+
+        <div class="form-section" id="triagem">
+            <div class="form-container">
+                <h2>REGISTRO DE ANOMALIA NOTURNA</h2>
+                <form id="pesadelo-form">
+                    <div class="form-group"><label>NOME COMPLETO</label><input type="text" required></div>
+                    <div class="form-group"><label>DESCREVA SEU PESADELO</label><textarea rows="4" required></textarea></div>
+                    <button type="submit" class="btn" style="width: 100%;">ENVIAR DADOS</button>
+                </form>
+            </div>
+        </div>
+
+        <footer>
+            <span style="float:left;">© 1998-2026 Clínica Despertar do Sono</span>
+            <a class="staff-login" onclick="openModal()">[ACESSO DE FUNCIONÁRIO]</a>
+        </footer>
+    </div>
+
+    <!-- POP-UP DE SENHA -->
+    <div id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header"><span>SEGURANÇA_LDS.EXE</span><span style="cursor:pointer;" onclick="closeModal()">[X]</span></div>
+            <div class="modal-body">
+                <p>INSIRA A CHAVE DE ACESSO:</p>
+                <input type="password" id="password-input" onkeypress="checkEnter(event)">
+                <p id="error-msg" style="color: red; display: none; font-size: 12px;">ACESSO NEGADO.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTRANET SECRETA -->
+    <div id="intranet-view">
+        <div class="scanlines"></div>
+        <h1>DIRETÓRIO RAIZ: NÃO-PREDESTINADOS</h1>
+        
+        <div class="intranet-alert">
+            <div>
+                <img src="Male_nurse_in_clinic_20261015175358.jpg" alt="Enfermeiro Sujo 1">
+                <img src="Nurse_in_strange_clinic_20261015175253.jpg" alt="Enfermeira Suja">
+            </div>
+            <div>
+                <h3 style="color: red; margin-top: 0;">[PROTOCOLO DE CONTENÇÃO BIOLÓGICA]</h3>
+                <p>STATUS DA VIÚVA BRANCA: <span class="red-text">CRÍTICO - ALIMENTAR IMEDIATAMENTE</span></p>
+                <p>É estritamente proibida a remoção dos respiradores nos subsolos. Materializações de Não-Predestinados estão ativas.</p>
+            </div>
+        </div>
+
+        <div class="patient-card">
+            <h3>REGISTRO_01: OSVALDO LIMA DA CRUZ (68 ANOS, PESCADOR)</h3>
+            <p><strong>Log:</strong> <span class="red-text">Entidade Materializada (~20m).</span> Interceptou e arremessou embarcação pesqueira.</p>
+            <div class="patient-images">
+                <img src="Man_wearing_white_shirt_20261015173453.jpg" alt="Osvaldo Humano 1">
+                <img src="Giant_lighthouse_man_walking_ocean_20261015170859.jpg" alt="Osvaldo Monstro 1">
+                <img src="Giant_lighthouse_man_walking_ocean_20261015170902.jpg" alt="Osvaldo Monstro 2">
+            </div>
+        </div>
+
+        <div class="patient-card">
+            <h3>REGISTRO_02: CLARICE MAIA DOS SANTOS (45 ANOS, PROFESSORA)</h3>
+            <p><strong>Log:</strong> Entidade justificou posse por "falta de tempo". Relatos de invasão a joalherias para ingestão de relógios.</p>
+            <div class="patient-images">
+                <img src="Woman_with_tired_expression_20261015172610.jpg" alt="Clarice Humana 1">
+                <img src="Creature_in_watch-repair_shop_20261015170845.jpg" alt="Clarice Monstro 1">
+                <img src="Creature_hanging_in_repair_shop_20261015170843.jpg" alt="Clarice Monstro 2">
+            </div>
+        </div>
+
+        <div class="patient-card">
+            <h3>REGISTRO_03: CARLOS PASCOALLE SILVA (28 ANOS, PEDREIRO)</h3>
+            <p><strong>Log:</strong> Materializou pesadelo na obra. <span class="red-text">Costurou o chefe de obra.</span></p>
+            <div class="patient-images">
+                <img src="Tired_man_in_construction_clothes_20261015174217.jpg" alt="Carlos Humano 1">
+                <img src="Tired_man_in_weird_clinic_20261015174219.jpg" alt="Carlos Humano 2">
+                <img src="image.png_20261015171100.jpg" alt="Carlos Monstro 1">
+                <img src="Frame_salvo_de_Creature_sewing_20261015171047.jpg" alt="Carlos Monstro 2">
+            </div>
+        </div>
+        
+        <div class="patient-card">
+            <h3>REGISTRO_04: FELIPE BEZERRA (19 ANOS, TRAFICANTE)</h3>
+            <p><strong>Log:</strong> Devorou proprietário de barbearia para sequestro sistemático de pacientes.</p>
+            <div class="patient-images">
+                <img src="Tired_young_man_in_clinic_20261015175147.jpg" alt="Felipe Humano">
+                <img src="Entity_standing_in_empty_barbershop_20261015170953.jpg" alt="Felipe Monstro 1">
+                <img src="Entity_standing_in_empty_barbershop_20261015170955.jpg" alt="Felipe Monstro 2">
+            </div>
+        </div>
+
+        <br><hr style="border-color: #00FF00;"><br>
+        
+        <p style="color: #FFFF00; cursor: pointer;" onclick="document.getElementById('video-container').style.display = 'block'">[ AVISO: ABRIR ARQUIVO CORROMPIDO_PLUTAO.mp4 ]</p>
+        
+        <div id="video-container" style="display: none; margin-top: 20px;">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/6wjpcRWDE2Y?controls=0&rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('login-modal');
+        const passInput = document.getElementById('password-input');
+        const errorMsg = document.getElementById('error-msg');
+        let exitTrigger = false;
+
+        function openModal() { modal.style.display = 'flex'; passInput.focus(); }
+        function closeModal() { modal.style.display = 'none'; }
+
+        // PC: Gatilho de saída do mouse
+        document.addEventListener('mouseleave', function(e) {
+            if(e.clientY < 0 && !exitTrigger && document.getElementById('public-view').style.display !== 'none') {
+                exitTrigger = true; openModal();
+            }
+        });
+
+        // CELULAR: 3 Toques Rápidos na Logo
+        let tapCount = 0;
+        let tapTimeout;
+        const logoImg = document.querySelector('.logo img');
+        
+        logoImg.addEventListener('click', function() {
+            tapCount++;
+            if(tapCount === 3) {
+                openModal();
+                tapCount = 0; 
+            }
+            clearTimeout(tapTimeout);
+            tapTimeout = setTimeout(() => { tapCount = 0; }, 1000); 
+        });
+
+        // Checar Senha
+        function checkEnter(e) {
+            if (e.key === 'Enter') {
+                if (passInput.value.toLowerCase() === 'pesadelos') {
+                    document.getElementById('public-view').style.display = 'none';
+                    document.getElementById('login-modal').style.display = 'none';
+                    document.getElementById('intranet-view').style.display = 'block';
+                    document.body.style.backgroundColor = '#050505'; 
+                } else {
+                    errorMsg.style.display = 'block';
+                    passInput.value = '';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
